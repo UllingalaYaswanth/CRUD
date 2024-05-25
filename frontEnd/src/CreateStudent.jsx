@@ -15,7 +15,13 @@ function CreateStudent() {
                 console.log(res);
                 navigate('/');
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                if (err.response && err.response.status === 409) {
+                    alert('Employee name already exists');
+                } else {
+                    console.error(err);
+                }
+            });
     }
 
     return (

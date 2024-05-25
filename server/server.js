@@ -56,21 +56,51 @@ app.put('/employee/:EmpID', (req, res) => {
 
 //post operation
 
+// app.post('/employee', (req, res) => {
+//     const { EmpName, EmpAge, EmpDept } = req.body;
+//     if (!EmpName || !EmpAge || !EmpDept) {
+//         return res.status(400).json({ message: 'All fields (EmpName, EmpAge, EmpDept) are required' });
+//     }
+    
+//     const sql = "INSERT INTO employee (EmpName, EmpAge, EmpDept) VALUES (?, ?, ?)";
+//     db.query(sql, [EmpName, EmpAge, EmpDept], (err, result) => {
+//         if (err) {
+//             console.error(err);
+//             return res.json({ message: err });
+//         }
+//         return res.json({ message: 'Employee added successfully', result });
+//     });
+// });
+
 app.post('/employee', (req, res) => {
     const { EmpName, EmpAge, EmpDept } = req.body;
     if (!EmpName || !EmpAge || !EmpDept) {
         return res.status(400).json({ message: 'All fields (EmpName, EmpAge, EmpDept) are required' });
     }
-    
-    const sql = "INSERT INTO employee (EmpName, EmpAge, EmpDept) VALUES (?, ?, ?)";
-    db.query(sql, [EmpName, EmpAge, EmpDept], (err, result) => {
+
+    // Check if EmpName already exists
+    const checkSql = "SELECT * FROM employee WHERE EmpName = ?";
+    db.query(checkSql, [EmpName], (err, result) => {
         if (err) {
             console.error(err);
-            return res.json({ message: err });
+            return res.status(500).json({ message: 'Database error' });
         }
-        return res.json({ message: 'Employee added successfully', result });
+        if (result.length > 0) {
+            return res.status(409).json({ message: 'Employee name already exists' });
+        }
+
+        // If EmpName does not exist, insert the new employee
+        const insertSql = "INSERT INTO employee (EmpName, EmpAge, EmpDept) VALUES (?, ?, ?)";
+        db.query(insertSql, [EmpName, EmpAge, EmpDept], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Database error' });
+            }
+            return res.status(201).json({ message: 'Employee added successfully', result });
+        });
     });
 });
+
 
 
 //delete opeartion

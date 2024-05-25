@@ -12,6 +12,11 @@ function Home() {
   }, []);
 
   const handleDelete = async (EmpID) => {
+    const confirmDelete = window.confirm("Are you sure that you want to delete this employee?");
+    if (!confirmDelete) {
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:3000/employee/${EmpID}`);
       // Update state to remove the deleted employee
@@ -24,7 +29,8 @@ function Home() {
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
       <div className='w-50 bg-white rounded p-3'>
-      <div className="d-flex justify-content-end mb-3">
+        <h2 className='text-center'><strong>Employee Details</strong></h2>
+        <div className="d-flex justify-content-end mb-3">
           <Link to='/Create' className='btn btn-success'>Add+</Link>
         </div>
         <table className='table'>
