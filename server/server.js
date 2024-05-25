@@ -1,8 +1,10 @@
 import express from "express";
 import mysql from "mysql";
 import bodyParser from "body-parser";
+import cors from 'cors'
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
@@ -10,7 +12,7 @@ const db = mysql.createConnection({
     user: "root",
     port: "3306",
     password: "password",
-    database: "kumardb1"
+    database: "my_database"
 });
 
 
