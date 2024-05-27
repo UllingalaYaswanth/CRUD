@@ -13,7 +13,7 @@ function CreateStudent() {
         axios.post('http://localhost:3000/employee', { EmpName, EmpAge, EmpDept })
             .then(res => {
                 console.log(res);
-                navigate('/');
+                navigate('/home');
             })
             .catch(err => {
                 if (err.response && err.response.status === 409) {
