@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Home() {
   const [employees, setEmployees] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:3000/')
@@ -26,10 +27,24 @@ function Home() {
     }
   };
 
+  const handleLogout = () => {
+    // Perform any logout logic here if necessary (e.g., clearing tokens)
+    navigate('/');
+  };
+
   return (
-    <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
+    <div className='d-flex flex-column vh-100 bg-primary justify-content-center align-items-center position-relative'>
+      <button
+        onClick={handleLogout}
+        className='btn btn-secondary bg-danger position-absolute'
+        style={{ top: '10px', right: '10px' }}
+      >
+        Logout
+      </button>
       <div className='w-50 bg-white rounded p-3'>
-        <h2 className='text-center'><strong>Employee Details</strong></h2>
+        <div className='d-flex justify-content-between align-items-center mb-3'>
+          <h2 className='text-center'><strong>Employee Details</strong></h2>
+        </div>
         <div className="d-flex justify-content-end mb-3">
           <Link to='/Create' className='btn btn-success'>Add+</Link>
         </div>

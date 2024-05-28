@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-function UpdateStudent() {
+function UpdateEmployee() {
     const [EmpName, setEmpName] = useState('');
     const [EmpAge, setEmpAge] = useState('');
     const [EmpDept, setEmpDept] = useState('');
@@ -18,17 +18,25 @@ function UpdateStudent() {
                 setEmpAge(EmpAge);
                 setEmpDept(EmpDept);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error fetching employee data:", err));
     }, [id]);
 
     function handleSubmit(event) {
         event.preventDefault();
+        
+        // Basic input validation
+        if (!EmpName || !EmpAge || !EmpDept) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        // Update the employee details
         axios.put(`http://localhost:3000/employee/${id}`, { EmpName, EmpAge, EmpDept })
             .then(res => {
-                console.log(res);
-                navigate('/');
+                console.log("Employee updated:", res);
+                navigate('/home');
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error updating employee data:", err));
     }
 
     return (
@@ -50,7 +58,7 @@ function UpdateStudent() {
                     <div className="mb-2">
                         <label htmlFor="age">Emp Age</label>
                         <input 
-                            type="text" 
+                            type="number" 
                             id="age" 
                             placeholder="Enter Age" 
                             className="form-control"
@@ -69,11 +77,11 @@ function UpdateStudent() {
                             onChange={e => setEmpDept(e.target.value)}
                         />
                     </div>
-                    <button className="btn btn-success">Update</button>
+                    <button className="btn btn-success" type="submit">Update</button>
                 </form>
             </div>
         </div>
     );
 }
 
-export default UpdateStudent;
+export default UpdateEmployee;

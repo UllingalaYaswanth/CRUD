@@ -1,11 +1,11 @@
-// App.js
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import CreateStudent from './CreateStudent';
-import UpdateStudent from './UpdateStudent';
+import UpdateEmployee from './UpdateEmployee';
 import Login from './Login';
+import Practice from './Practice';
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path='/home' element={<Home />} />
         <Route path='/create' element={<CreateStudent />} />
-        <Route path='/update/:id' element={<UpdateStudent />} />
+        <Route path='/home/update/:id' element={<UpdateEmployee />} />
       </Routes>
     </BrowserRouter>
   );
