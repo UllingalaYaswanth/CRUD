@@ -36,7 +36,7 @@ function Home() {
     <div className='d-flex flex-column vh-100 bg-primary justify-content-center align-items-center position-relative'>
       <button
         onClick={handleLogout}
-        className='btn btn-secondary bg-danger position-absolute'
+        className='btn btn-danger position-absolute'
         style={{ top: '10px', right: '10px' }}
       >
         Logout

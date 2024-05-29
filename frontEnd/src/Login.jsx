@@ -107,7 +107,9 @@ function Login() {
           {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
         </button>
       </div>
-    </div>
+      
+  </div>
+    
   );
 }
 

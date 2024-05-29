@@ -6,6 +6,7 @@ import CreateStudent from './CreateStudent';
 import UpdateEmployee from './UpdateEmployee';
 import Login from './Login';
 import Practice from './Practice';
+import Temp_login from './Temp_login';
 
 function App() {
   return (
