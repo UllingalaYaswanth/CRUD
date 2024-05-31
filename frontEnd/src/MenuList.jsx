@@ -2,8 +2,9 @@ import React from 'react';
 import './App.css';
 import { Link, useLocation } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
+import ExitToApp from '@mui/icons-material/ExitToApp';
 
-function MenuList() {
+function MenuList(props) {
   const location = useLocation();
 
   return (
@@ -20,6 +21,13 @@ function MenuList() {
             </Link>
           </li>
         ))}
+        {/* Render logout button */}
+        <li className='sidebar_logout'>
+        <Link to="/" className="row" onClick={props.onLogout}>
+            <div id="icon"><ExitToApp /></div>
+            <div id="title">Logout</div>
+          </Link>
+        </li>
       </ul>
     </div>
   );

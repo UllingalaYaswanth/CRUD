@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateEmployee() {
-    const [EmpName, setEmpName] = useState('');
-    const [EmpAge, setEmpAge] = useState('');
-    const [EmpDept, setEmpDept] = useState('');
+    const [Name, setName] = useState('');
+    const [Age, setAge] = useState('');
+    const [Dept, setDept] = useState('');
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -13,10 +13,10 @@ function UpdateEmployee() {
         // Fetch the existing details of the employee
         axios.get(`http://localhost:3000/employee/${id}`)
             .then(res => {
-                const { EmpName, EmpAge, EmpDept } = res.data;
-                setEmpName(EmpName);
-                setEmpAge(EmpAge);
-                setEmpDept(EmpDept);
+                const { Name, Age, Dept } = res.data;
+                setName(Name);
+                setAge(Age);
+                setDept(Dept);
             })
             .catch(err => console.error("Error fetching employee data:", err));
     }, [id]);
@@ -25,13 +25,13 @@ function UpdateEmployee() {
         event.preventDefault();
         
         // Basic input validation
-        if (!EmpName || !EmpAge || !EmpDept) {
+        if (!Name || !Age || !Dept) {
             alert("Please fill in all fields.");
             return;
         }
 
         // Update the employee details
-        axios.put(`http://localhost:3000/employee/${id}`, { EmpName, EmpAge, EmpDept })
+        axios.put(`http://localhost:3000/employee/${id}`, { Name, Age, Dept })
             .then(res => {
                 console.log("Employee updated:", res);
                 navigate('/home');
@@ -45,36 +45,36 @@ function UpdateEmployee() {
                 <form onSubmit={handleSubmit}>
                     <h2>Update Employee</h2>
                     <div className="mb-2">
-                        <label htmlFor="name">Emp Name</label>
+                        <label htmlFor="name">Name</label>
                         <input 
                             type="text" 
                             id="name" 
                             placeholder="Enter Name" 
                             className="form-control"
-                            value={EmpName}
-                            onChange={e => setEmpName(e.target.value)}
+                            value={Name}
+                            onChange={e => setName(e.target.value)}
                         />
                     </div>
                     <div className="mb-2">
-                        <label htmlFor="age">Emp Age</label>
+                        <label htmlFor="age">Age</label>
                         <input 
                             type="number" 
                             id="age" 
                             placeholder="Enter Age" 
                             className="form-control"
-                            value={EmpAge}
-                            onChange={e => setEmpAge(e.target.value)}
+                            value={Age}
+                            onChange={e => setAge(e.target.value)}
                         />
                     </div>
                     <div className="mb-2">
-                        <label htmlFor="dept">Emp Dept</label>
+                        <label htmlFor="dept">Dept</label>
                         <input 
                             type="text" 
                             id="dept" 
                             placeholder="Enter Dept" 
                             className="form-control"
-                            value={EmpDept}
-                            onChange={e => setEmpDept(e.target.value)}
+                            value={Dept}
+                            onChange={e => setDept(e.target.value)}
                         />
                     </div>
                     <button className="btn btn-success" type="submit">Update</button>

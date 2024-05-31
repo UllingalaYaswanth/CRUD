@@ -23,11 +23,11 @@ DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
-  `EmpID` int unsigned NOT NULL AUTO_INCREMENT,
-  `EmpName` varchar(45) DEFAULT NULL,
-  `EmpAge` int DEFAULT NULL,
-  `EmpDept` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`EmpID`)
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `Age` int DEFAULT NULL,
+  `Dept` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

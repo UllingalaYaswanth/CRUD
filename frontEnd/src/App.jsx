@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Home';
@@ -15,12 +15,24 @@ const { Header, Sider, Content } = Layout;
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  useEffect(() => {
+    // Check if user is already authenticated in localStorage
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    if (storedAuth) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const handleLogin = () => {
+    // Update authentication state and store in localStorage
     setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
   };
 
   const handleLogout = () => {
+    // Clear authentication state and localStorage
     setIsAuthenticated(false);
+    localStorage.removeItem('isAuthenticated');
   };
 
   return (
@@ -28,13 +40,13 @@ function App() {
       {isAuthenticated ? (
         <Layout>
           <Sider>
-            <MenuList />
+            <MenuList onLogout={handleLogout} />
           </Sider>
           <Layout>
             <Header style={{ background: '#2f4050', padding: 0 }} />
             <Content style={{ margin: '0px', overflow: 'initial' }}>
               <Routes>
-                <Route path="/home" element={<Home onLogout={handleLogout} />} />
+                <Route path="/home" element={<Home/>} />
                 <Route path="/taskscreen" element={<TaskScreen />} />
                 <Route path="/create" element={<CreateStudent />} />
                 <Route path="/home/update/:id" element={<UpdateEmployee />} />
@@ -55,3 +67,4 @@ function App() {
 }
 
 export default App;
+

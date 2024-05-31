@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CreateStudent() {
-    const [EmpName, setEmpName] = useState('');
-    const [EmpAge, setEmpAge] = useState('');
-    const [EmpDept, setEmpDept] = useState('');
+    const [Name, setName] = useState('');
+    const [Age, setAge] = useState('');
+    const [Dept, setDept] = useState('');
     const navigate = useNavigate();
 
     function handleSubmit(event) {
         event.preventDefault();
-        axios.post('http://localhost:3000/employee', { EmpName, EmpAge, EmpDept })
+        axios.post('http://localhost:3000/employee', { Name, Age, Dept })
             .then(res => {
                 console.log(res);
                 navigate('/home');
@@ -28,38 +28,35 @@ function CreateStudent() {
         <div className="d-flex vh-100 bg-primary justify-content-center align-items-center">
             <div className="w-50 bg-white rounded p-3">
                 <form onSubmit={handleSubmit}>
-                    <h2>Add Student</h2>
+                    <h2>Add Employee</h2>
                     <div className="mb-2">
-                        <label htmlFor="name">Emp Name</label>
+                        <label htmlFor="name">Name</label>
                         <input 
                             type="text" 
                             id="name" 
-                            placeholder="Enter Name" 
                             className="form-control"
-                            value={EmpName}
-                            onChange={e => setEmpName(e.target.value)}
+                            value={Name}
+                            onChange={e => setName(e.target.value)}
                         />
                     </div>
                     <div className="mb-2">
-                        <label htmlFor="age">Emp Age</label>
+                        <label htmlFor="age">Age</label>
                         <input 
                             type="text" 
                             id="age" 
-                            placeholder="Enter Age" 
                             className="form-control"
-                            value={EmpAge}
-                            onChange={e => setEmpAge(e.target.value)}
+                            value={Age}
+                            onChange={e => setAge(e.target.value)}
                         />
                     </div>
                     <div className="mb-2">
-                        <label htmlFor="dept">Emp Dept</label>
+                        <label htmlFor="dept">Dept</label>
                         <input 
                             type="text" 
                             id="dept" 
-                            placeholder="Enter Dept" 
                             className="form-control"
-                            value={EmpDept}
-                            onChange={e => setEmpDept(e.target.value)}
+                            value={Dept}
+                            onChange={e => setDept(e.target.value)}
                         />
                     </div>
                     <button className="btn btn-success">Submit</button>

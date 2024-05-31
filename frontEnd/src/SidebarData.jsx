@@ -1,8 +1,10 @@
+// SidebarData.js
 import React from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import ArticleOutlinedIcon from '@mui/icons-material/Article';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentInd';
 import SettingsOutlinedIcon from '@mui/icons-material/Settings';
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToApp';
 
 export const SidebarData = [
   {
@@ -29,5 +31,10 @@ export const SidebarData = [
     title: 'Leave Request Form',
     icon: <AssignmentIndOutlinedIcon />,
     link: '/leaverequestform'
-  }
+  },
+  // {
+  //   title: 'Logout',
+  //   icon: <ExitToAppOutlinedIcon />,
+  //   link: '/'
+  // }
 ];

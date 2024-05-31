@@ -38,16 +38,16 @@ app.get('/', (req, res) => {
 
 // put operation
 
-app.put('/employee/:EmpID', (req, res) => {
-    const { EmpID } = req.params;
-    const { EmpName, EmpAge, EmpDept } = req.body;
+app.put('/employee/:ID', (req, res) => {
+    const { ID } = req.params;
+    const { Name, Age, Dept } = req.body;
 
-    if (!EmpName || !EmpAge || !EmpDept) {
+    if (!Name || !Age || !Dept) {
         return res.status(400).json({ message: 'Missing fields in request body' });
     }
 
-    const sql = "UPDATE employee SET EmpName = ?, EmpAge = ?, EmpDept = ? WHERE EmpID = ?";
-    db.query(sql, [EmpName, EmpAge, EmpDept, EmpID], (err, result) => {
+    const sql = "UPDATE employee SET Name = ?, Age = ?, Dept = ? WHERE ID = ?";
+    db.query(sql, [Name, Age, Dept, ID], (err, result) => {
         if (err) {
             console.error(err);
             return res.json({ message: err });
@@ -59,13 +59,13 @@ app.put('/employee/:EmpID', (req, res) => {
 //post operation
 
 // app.post('/employee', (req, res) => {
-//     const { EmpName, EmpAge, EmpDept } = req.body;
-//     if (!EmpName || !EmpAge || !EmpDept) {
-//         return res.status(400).json({ message: 'All fields (EmpName, EmpAge, EmpDept) are required' });
+//     const { Name, Age, Dept } = req.body;
+//     if (!Name || !Age || !Dept) {
+//         return res.status(400).json({ message: 'All fields (Name, Age, Dept) are required' });
 //     }
     
-//     const sql = "INSERT INTO employee (EmpName, EmpAge, EmpDept) VALUES (?, ?, ?)";
-//     db.query(sql, [EmpName, EmpAge, EmpDept], (err, result) => {
+//     const sql = "INSERT INTO employee (Name, Age, Dept) VALUES (?, ?, ?)";
+//     db.query(sql, [Name, Age, Dept], (err, result) => {
 //         if (err) {
 //             console.error(err);
 //             return res.json({ message: err });
@@ -75,14 +75,14 @@ app.put('/employee/:EmpID', (req, res) => {
 // });
 
 app.post('/employee', (req, res) => {
-    const { EmpName, EmpAge, EmpDept } = req.body;
-    // if (!EmpName || !EmpAge || !EmpDept) {
-    //     return res.status(400).json({ message: 'All fields (EmpName, EmpAge, EmpDept) are required' });
+    const { Name, Age, Dept } = req.body;
+    // if (!Name || !Age || !Dept) {
+    //     return res.status(400).json({ message: 'All fields (Name, Age, Dept) are required' });
     // }
 
-    // Check if EmpName already exists
-    const checkSql = "SELECT * FROM employee WHERE EmpName = ?";
-    db.query(checkSql, [EmpName], (err, result) => {
+    // Check if Name already exists
+    const checkSql = "SELECT * FROM employee WHERE Name = ?";
+    db.query(checkSql, [Name], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ message: 'Database error' });
@@ -91,9 +91,9 @@ app.post('/employee', (req, res) => {
             return res.status(409).json({ message: 'Employee name already exists' });
         }
 
-        // If EmpName does not exist, insert the new employee
-        const insertSql = "INSERT INTO employee (EmpName, EmpAge, EmpDept) VALUES (?, ?, ?)";
-        db.query(insertSql, [EmpName, EmpAge, EmpDept], (err, result) => {
+        // If Name does not exist, insert the new employee
+        const insertSql = "INSERT INTO employee (Name, Age, Dept) VALUES (?, ?, ?)";
+        db.query(insertSql, [Name, Age, Dept], (err, result) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ message: 'Database error' });
@@ -153,10 +153,10 @@ app.post('/signin', async (req, res) => {
 //delete opeartion
 
 
-app.delete('/employee/:EmpID', (req, res) => {
-    const { EmpID } = req.params;
-    const sql = "DELETE FROM employee WHERE EmpID = ?";
-    db.query(sql, [EmpID], (err, result) => {
+app.delete('/employee/:ID', (req, res) => {
+    const { ID } = req.params;
+    const sql = "DELETE FROM employee WHERE ID = ?";
+    db.query(sql, [ID], (err, result) => {
         if (err) return res.json({ message: err });
         return res.json({ message: 'Employee deleted successfully', result });
     });
