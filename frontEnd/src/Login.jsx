@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ onLogin }) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -12,11 +12,13 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (event) => {
+    event.preventDefault(); // Prevent default form submission
     try {
       const response = await axios.post('http://localhost:3000/signin', { username, password });
       if (response.data.success) {
-        navigate('/taskscreen');
+        onLogin(); // Call onLogin to update authentication state in App component
+        navigate('/home'); // Navigate to the home page after login
       } else {
         setErrorMessage(response.data.message || 'Sign In Failed');
       }
@@ -26,7 +28,8 @@ function Login() {
     }
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (event) => {
+    event.preventDefault(); // Prevent default form submission
     if (password !== confirmPassword) {
       setErrorMessage("Passwords don't match!");
       return;
@@ -51,7 +54,7 @@ function Login() {
       <div className="shadow w-50 bg-white rounded p-3">
         <h2>{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
           <div className="form-group">
             <label>Username</label>
             <input
@@ -96,7 +99,7 @@ function Login() {
               />
             </div>
           )}
-          <button className="btn btn-primary mt-2" onClick={isSignUp ? handleSignUp : handleSignIn}>
+          <button className="btn btn-primary mt-2" type="submit">
             {isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
         </form>
@@ -107,9 +110,7 @@ function Login() {
           {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
         </button>
       </div>
-      
-  </div>
-    
+    </div>
   );
 }
 

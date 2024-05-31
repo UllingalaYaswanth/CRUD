@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
-function Home() {
+function Home({ onLogout }) {
   const [employees, setEmployees] = useState([]);
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ function Home() {
   };
 
   const handleLogout = () => {
-    // Perform any logout logic here if necessary (e.g., clearing tokens)
+    onLogout();
     navigate('/');
   };
 
@@ -66,9 +66,7 @@ function Home() {
                 <td>{employee.EmpAge}</td>
                 <td>{employee.EmpDept}</td>
                 <td>
-                  {/* <Link to={`update/${employee.EmpID}`} className='btn btn-primary'>Update</Link> */}
                   <Link to={`/home/update/${employee.EmpID}`} className='btn btn-primary'>Update</Link>
-
                   <button onClick={() => handleDelete(employee.EmpID)} className='btn btn-danger ms-2'>Delete</button>
                 </td>
               </tr>
