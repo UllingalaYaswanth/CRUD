@@ -66,7 +66,9 @@ function Home() {
                 <td>{employee.EmpAge}</td>
                 <td>{employee.EmpDept}</td>
                 <td>
-                  <Link to={`update/${employee.EmpID}`} className='btn btn-primary'>Update</Link>
+                  {/* <Link to={`update/${employee.EmpID}`} className='btn btn-primary'>Update</Link> */}
+                  <Link to={`/home/update/${employee.EmpID}`} className='btn btn-primary'>Update</Link>
+
                   <button onClick={() => handleDelete(employee.EmpID)} className='btn btn-danger ms-2'>Delete</button>
                 </td>
               </tr>

@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^5.15.19",
+    "antd": "^5.17.4",
     "firebase": "^10.12.2"
   }
 }

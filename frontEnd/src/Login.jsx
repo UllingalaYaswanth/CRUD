@@ -16,7 +16,7 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:3000/signin', { username, password });
       if (response.data.success) {
-        navigate('/home');
+        navigate('/taskscreen');
       } else {
         setErrorMessage(response.data.message || 'Sign In Failed');
       }
