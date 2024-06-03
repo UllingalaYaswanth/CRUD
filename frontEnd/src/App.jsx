@@ -9,6 +9,7 @@ import LeaveRequestForm from './LeaveRequestForm';
 import { Layout } from 'antd';
 import MenuList from './MenuList';
 import Login from './Login';
+import EmployeeDetails from './EmployeeDetails';
 
 const { Header, Sider, Content } = Layout;
 
@@ -47,6 +48,7 @@ function App() {
             <Content style={{ margin: '0px', overflow: 'initial' }}>
               <Routes>
                 <Route path="/home" element={<Home/>} />
+                <Route path="/employee/:ID" element={<EmployeeDetails />} />
                 <Route path="/taskscreen" element={<TaskScreen />} />
                 <Route path="/create" element={<CreateStudent />} />
                 <Route path="/home/update/:id" element={<UpdateEmployee />} />

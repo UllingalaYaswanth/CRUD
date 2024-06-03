@@ -6,11 +6,26 @@ function CreateStudent() {
     const [Name, setName] = useState('');
     const [Age, setAge] = useState('');
     const [Dept, setDept] = useState('');
+    const [MobileNumber, setMobileNumber] = useState('');
+    const [Photo, setPhoto] = useState(null);
     const navigate = useNavigate();
 
     function handleSubmit(event) {
         event.preventDefault();
-        axios.post('http://localhost:3000/employee', { Name, Age, Dept })
+        const formData = new FormData();
+        formData.append('Name', Name);
+        formData.append('Age', Age);
+        formData.append('Dept', Dept);
+        formData.append('MobileNumber', MobileNumber);
+        if (Photo) {
+            formData.append('Photo', Photo);
+        }
+
+        axios.post('http://localhost:3000/employee', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then(res => {
                 console.log(res);
                 navigate('/home');
@@ -57,6 +72,26 @@ function CreateStudent() {
                             className="form-control"
                             value={Dept}
                             onChange={e => setDept(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="number">Mobile Number</label>
+                        <input
+                            className="form-control mb-3"
+                            type="number"
+                            value={MobileNumber}
+                            onChange={e => setMobileNumber(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Photo</label>
+                        <input
+                        className="form-control mb-3"
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            multiple={false}
+                            onChange={e => setPhoto(e.target.files[0])}
                         />
                     </div>
                     <button className="btn btn-success">Submit</button>

@@ -1,14 +1,42 @@
 import express from "express";
 import mysql from "mysql";
 import bodyParser from "body-parser";
-import cors from 'cors'
+import cors from 'cors';
 import bcrypt from 'bcrypt';
-
+import multer from 'multer';
+import path from 'path'; // Import the 'path' module
+import fs from 'fs'; // Import the 'fs' module for file system operations
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use('/uploads', express.static('uploads'));
+
+
+// Ensure the 'uploads' directory exists
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir); // Destination folder for uploaded files
+    },
+    filename: function (req, file, cb) {
+        // File naming (you can customize this as needed)
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 } // Limit file size to 5MB, adjust as needed
+});
+
+// Database connection
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -16,7 +44,6 @@ const db = mysql.createConnection({
     password: "password",
     database: "my_database"
 });
-
 
 db.connect((err) => {
     if (err) {
@@ -26,91 +53,71 @@ db.connect((err) => {
     console.log('Connected to database.');
 });
 
-// get operation
-
+// Get all employees
 app.get('/', (req, res) => {
     const sql = "SELECT * FROM employee";
     db.query(sql, (err, result) => {
-        if (err) return res.json({ message: err });
+        if (err) {
+            console.error('Error fetching employees:', err);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
         return res.json(result);
     });
 });
 
-// put operation
-
-app.put('/employee/:ID', (req, res) => {
+// Get employee by ID
+app.get('/employee/:ID', (req, res) => {
     const { ID } = req.params;
-    const { Name, Age, Dept } = req.body;
-
-    if (!Name || !Age || !Dept) {
-        return res.status(400).json({ message: 'Missing fields in request body' });
-    }
-
-    const sql = "UPDATE employee SET Name = ?, Age = ?, Dept = ? WHERE ID = ?";
-    db.query(sql, [Name, Age, Dept, ID], (err, result) => {
+    const sql = "SELECT * FROM employee WHERE ID = ?";
+    db.query(sql, [ID], (err, result) => {
         if (err) {
-            console.error(err);
-            return res.json({ message: err });
+            console.error('Error fetching employee:', err);
+            return res.status(500).json({ message: 'Internal server error' });
         }
-        return res.json({ message: 'Employee updated successfully', result });
+        if (result.length === 0) return res.status(404).json({ message: 'Employee not found' });
+        return res.json(result[0]);
     });
 });
 
-//post operation
+// Add new employee with file upload
+app.post('/employee', upload.single('Photo'), (req, res) => {
+    try {
+        const { Name, Age, Dept, MobileNumber } = req.body;
+        const Photo = req.file ? req.file.filename : null;
 
-// app.post('/employee', (req, res) => {
-//     const { Name, Age, Dept } = req.body;
-//     if (!Name || !Age || !Dept) {
-//         return res.status(400).json({ message: 'All fields (Name, Age, Dept) are required' });
-//     }
-    
-//     const sql = "INSERT INTO employee (Name, Age, Dept) VALUES (?, ?, ?)";
-//     db.query(sql, [Name, Age, Dept], (err, result) => {
-//         if (err) {
-//             console.error(err);
-//             return res.json({ message: err });
-//         }
-//         return res.json({ message: 'Employee added successfully', result });
-//     });
-// });
-
-app.post('/employee', (req, res) => {
-    const { Name, Age, Dept } = req.body;
-    // if (!Name || !Age || !Dept) {
-    //     return res.status(400).json({ message: 'All fields (Name, Age, Dept) are required' });
-    // }
-
-    // Check if Name already exists
-    const checkSql = "SELECT * FROM employee WHERE Name = ?";
-    db.query(checkSql, [Name], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Database error' });
-        }
-        if (result.length > 0) {
-            return res.status(409).json({ message: 'Employee name already exists' });
+        if (!Name || !Age || !Dept || !MobileNumber || !Photo) {
+            console.error('Missing fields:', { Name, Age, Dept, MobileNumber, Photo });
+            return res.status(400).json({ message: 'Missing fields in request body' });
         }
 
-        // If Name does not exist, insert the new employee
-        const insertSql = "INSERT INTO employee (Name, Age, Dept) VALUES (?, ?, ?)";
-        db.query(insertSql, [Name, Age, Dept], (err, result) => {
+        const checkSql = "SELECT * FROM employee WHERE Name = ?";
+        db.query(checkSql, [Name], (err, result) => {
             if (err) {
-                console.error(err);
+                console.error('Error checking employee:', err);
                 return res.status(500).json({ message: 'Database error' });
             }
-            return res.status(201).json({ message: 'Employee added successfully', result });
+            if (result.length > 0) {
+                console.error('Employee name already exists:', Name);
+                return res.status(409).json({ message: 'Employee name already exists' });
+            }
+
+            const insertSql = "INSERT INTO employee (Name, Age, Dept, MobileNumber, Photo) VALUES (?, ?, ?, ?, ?)";
+            db.query(insertSql, [Name, Age, Dept, MobileNumber, Photo], (err, result) => {
+                if (err) {
+                    console.error('Error inserting employee:', err);
+                    return res.status(500).json({ message: 'Database error' });
+                }
+                console.log('Employee added successfully:', result);
+                return res.status(201).json({ message: 'Employee added successfully', result });
+            });
         });
-    });
+    } catch (error) {
+        console.error('Error handling request:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
-// login page 
-
-// app.post('/signin', (req, res) => {
-//     const { username, password } = req.body;
-//     // Authenticate user
-//     res.send({ message: 'Sign In successful' });
-//   });
-// Signup Route
+// Sign up route
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -128,7 +135,7 @@ app.post('/signup', async (req, res) => {
     });
 });
 
-// Signin Route
+// Sign in route
 app.post('/signin', async (req, res) => {
     const { username, password } = req.body;
     const sql = "SELECT * FROM signup WHERE username = ?";
@@ -140,7 +147,7 @@ app.post('/signin', async (req, res) => {
         if (result.length === 0) {
             return res.status(401).json({ success: false, message: 'User not found' });
         }
-        
+
         const user = result[0];
         if (await bcrypt.compare(password, user.password)) {
             return res.json({ success: true, message: 'Signin successful' });
@@ -150,19 +157,19 @@ app.post('/signin', async (req, res) => {
     });
 });
 
-//delete opeartion
-
-
+// Delete employee
 app.delete('/employee/:ID', (req, res) => {
     const { ID } = req.params;
     const sql = "DELETE FROM employee WHERE ID = ?";
     db.query(sql, [ID], (err, result) => {
-        if (err) return res.json({ message: err });
+        if (err) {
+            console.error('Error deleting employee:', err);
+            return res.status(500).json({ message: 'Database error' });
+        }
         return res.json({ message: 'Employee deleted successfully', result });
     });
 });
 
-
 app.listen(3000, () => {
-    console.log("hello from backend");
+    console.log("Server is running on port 3000");
 });

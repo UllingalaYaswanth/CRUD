@@ -21,23 +21,18 @@ function Home({ onLogout }) {
 
     try {
       await axios.delete(`http://localhost:3000/employee/${ID}`);
-      // Update state to remove the deleted employee
       setEmployees(employees.filter(employee => employee.ID !== ID));
     } catch (err) {
       console.log(err);
     }
   };
 
-
   return (
     <div className='d-flex flex-column vh-100 bg-primary justify-content-center align-items-center position-relative'>
       <div className='w-50 bg-white rounded p-3'>
-        <div className='d-flex justify-content-between align-items-center justify-content-end mb-3'>
+        <div className='d-flex justify-content-between align-items-center mb-3'>
           <h2 className='text-center'><strong>Employee Details</strong></h2>
           <Link to='/Create' className='btn btn-success'>Add+</Link>
-        </div>
-        <div className="">
-          
         </div>
         <table className='table'>
           <thead>
@@ -49,15 +44,15 @@ function Home({ onLogout }) {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody className='align-text-bottom'>
+          <tbody>
             {employees.map((employee, i) => (
               <tr key={i}>
                 <td>{employee.ID}</td>
-                <td><Link to={`/home/update/${employee.ID}`} className='d-flex text-dark text-decoration-none'>{employee.Name}</Link></td>
+                <td><Link to={`/employee/${employee.ID}`} className='d-flex text-dark text-decoration-none'>{employee.Name}</Link></td>
                 <td>{employee.Age}</td>
                 <td>{employee.Dept}</td>
                 <td>
-                  <button onClick={() => handleDelete(employee.ID)} className='btn btn-danger ms-1'><DeleteForeverIcon/></button>
+                  <button onClick={() => handleDelete(employee.ID)} className='btn btn-danger ms-1'><DeleteForeverIcon /></button>
                 </td>
               </tr>
             ))}
