@@ -82,10 +82,10 @@ app.get('/employee/:ID', (req, res) => {
 // Add new employee with file upload
 app.post('/employee', upload.single('Photo'), (req, res) => {
     try {
-        const { Name, Age, Dept, MobileNumber } = req.body;
+        const { Name, Age, Dept, MobileNumber ,Role} = req.body;
         const Photo = req.file ? req.file.filename : null;
 
-        if (!Name || !Age || !Dept || !MobileNumber || !Photo) {
+        if (!Name || !Age || !Dept || !MobileNumber ||!Role || !Photo) {
             console.error('Missing fields:', { Name, Age, Dept, MobileNumber, Photo });
             return res.status(400).json({ message: 'Missing fields in request body' });
         }
@@ -101,8 +101,8 @@ app.post('/employee', upload.single('Photo'), (req, res) => {
                 return res.status(409).json({ message: 'Employee name already exists' });
             }
 
-            const insertSql = "INSERT INTO employee (Name, Age, Dept, MobileNumber, Photo) VALUES (?, ?, ?, ?, ?)";
-            db.query(insertSql, [Name, Age, Dept, MobileNumber, Photo], (err, result) => {
+            const insertSql = "INSERT INTO employee (Name, Age, Dept, MobileNumber,Role, Photo) VALUES (?, ?, ?, ?, ?, ?)";
+            db.query(insertSql, [Name, Age, Dept, MobileNumber,Role, Photo], (err, result) => {
                 if (err) {
                     console.error('Error inserting employee:', err);
                     return res.status(500).json({ message: 'Database error' });

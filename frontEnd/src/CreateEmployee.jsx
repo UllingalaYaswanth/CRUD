@@ -2,11 +2,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function CreateStudent() {
+function CreateEmployee() {
     const [Name, setName] = useState('');
     const [Age, setAge] = useState('');
     const [Dept, setDept] = useState('');
     const [MobileNumber, setMobileNumber] = useState('');
+    const [Role, setRole] =useState('');
     const [Photo, setPhoto] = useState(null);
     const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ function CreateStudent() {
         formData.append('Age', Age);
         formData.append('Dept', Dept);
         formData.append('MobileNumber', MobileNumber);
+        formData.append('Role',Role);
         if (Photo) {
             formData.append('Photo', Photo);
         }
@@ -84,6 +86,14 @@ function CreateStudent() {
                         />
                     </div>
                     <div>
+                        <label htmlFor="role">Role</label>
+                        <select className="form-control mb-3" onChange={e => setRole(e.target.value)}>
+                            <option value={''}>Select Role</option>
+                            <option value={"employee"}>Employee</option>
+                            <option value={"admin"}>Admin</option>
+                        </select>
+                    </div>
+                    <div>
                         <label>Photo</label>
                         <input
                         className="form-control mb-3"
@@ -101,4 +111,4 @@ function CreateStudent() {
     );
 }
 
-export default CreateStudent;
+export default CreateEmployee;
