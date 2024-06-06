@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie';
+
+const loadingAnimationData = 'https://lottie.host/c3af2b9a-86e8-43a8-8ec0-cb9bb0db28cc/f9mdFcSb56.json';
 
 function Login({ onLogin }) {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -10,20 +13,46 @@ function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [animationData, setAnimationData] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetch(loadingAnimationData)
+      .then(response => response.json())
+      .then(data => setAnimationData(data));
+  }, []);
+
+  const loadingOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
   const handleSignIn = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
+    setLoading(true);
+    console.log('Signing in with:', { username, password }); // Log the request payload
+
     try {
       const response = await axios.post('http://localhost:3000/signin', { username, password });
-      if (response.data.success) {
-        onLogin(); // Call onLogin to update authentication state in App component
-        navigate('/home'); // Navigate to the home page after login
-      } else {
-        setErrorMessage(response.data.message || 'Sign In Failed');
-      }
+      console.log('Sign In Response:', response.data); // Log the response data
+
+      setTimeout(() => {
+        setLoading(false);
+        if (response.data.success) {
+          onLogin();
+          navigate('/home');
+        } else {
+          setErrorMessage(response.data.message || 'Sign In Failed');
+        }
+      }, 2000); // Change the duration here if needed
     } catch (error) {
-      console.error('Sign In Error', error);
+      console.error('Sign In Error:', error.response || error.message); // Log detailed error info
+      setLoading(false);
       setErrorMessage('Sign In Error');
     }
   };
@@ -35,19 +64,33 @@ function Login({ onLogin }) {
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await axios.post('http://localhost:3000/signup', { username, password, email });
-      if (response.data.success) {
-        setIsSignUp(false);
-        setErrorMessage('');
-      } else {
-        setErrorMessage(response.data.message || 'Sign Up Failed');
-      }
+      setTimeout(() => {
+        setLoading(false);
+        if (response.data.success) {
+          setIsSignUp(false);
+          setErrorMessage('');
+        } else {
+          setErrorMessage(response.data.message || 'Sign Up Failed');
+        }
+      }, 2000); // Change the duration here if needed
     } catch (error) {
       console.error('Sign Up Error', error);
+      setLoading(false);
       setErrorMessage('Sign Up Error');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex vh-100 bg-primary justify-content-center align-items-center">
+        {animationData && <Lottie options={loadingOptions} height={300} width={300} />}
+      </div>
+    );
+  }
 
   return (
     <div className="d-flex vh-100 bg-primary justify-content-center align-items-center">
